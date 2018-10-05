@@ -28,8 +28,8 @@ voiceDict = {}
 partitureDict = {}
 incipitDict = {}
 
-m = None;
 for line in file:
+	m = None
 	if (m == None):
 		m = printNumberRE.match(line)
 		if (m != None):
@@ -81,5 +81,3 @@ for line in file:
 		m = IncipitRE.match(line)
 		if (m != None):
 			incipitDict[printNumber] = m.group(1)
-
-
