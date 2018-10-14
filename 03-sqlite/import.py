@@ -73,7 +73,7 @@ cur.execute('''create table print ( id integer primary key not null,
                      partiture char(1) default 'N' not null, -- N = No, Y = Yes, P = Partial
                      edition integer references edition( id ) );''')
 
-for p in prints:
+for p in prints: #TODO - all rows should be unique?
 	e = p.edition
 	c = e.composition
 
