@@ -133,7 +133,12 @@ def load(filename):
 						diedYear = re.search("[1-3][0-9]{3}", diedYear).group(0).strip()
 						composerBornDict[printNumber][i] = bornYear
 						composerDiedDict[printNumber][i] = diedYear
-					composerDict[printNumber][i] = re.sub("[(][1-3][0-9]{3}[-]*[1-3][0-9]{3}[)]", "", composerDict[printNumber][i]).strip()
+						composerDict[printNumber][i] = re.sub("[(][1-3][0-9]{3}[-]*[1-3][0-9]{3}[)]", "", composerDict[printNumber][i]).strip()
+					brn = re.search("[(][1-3][0-9]{3}.*[)]", composerDict[printNumber][i])
+					if (brn != None):
+						bornYear = re.search("[1-3][0-9]{3}", composerDict[printNumber][i]).group(0).strip()
+						composerBornDict[printNumber][i] = bornYear
+						composerDict[printNumber][i] = re.sub("[(][1-3][0-9]{3}.*[)]", "", composerDict[printNumber][i]).strip()
 		if (m == None):
 			m = titleRE.match(line)
 			if (m != None):

@@ -73,7 +73,7 @@ cur.execute('''create table print ( id integer primary key not null,
                      partiture char(1) default 'N' not null, -- N = No, Y = Yes, P = Partial
                      edition integer references edition( id ) );''')
 
-for p in prints: #TODO - store only unique values for persons! Merge born/died!
+for p in prints:
 	e = p.edition
 	c = e.composition
 
@@ -101,7 +101,7 @@ for p in prints: #TODO - store only unique values for persons! Merge born/died!
 	cur.execute('''insert into score (name, genre, key, incipit, year) values (?, ?, ?, ?, ?)''', (c.name, cGenre, cKey, cIncipit, cYear))
 	cur.execute('SELECT last_insert_rowid()')
 	scoreID = cur.fetchone()[0]
-	print("Score " + str(scoreID) + " is OK!")
+	#print("Score " + str(scoreID) + " is OK!")
 
 	for i in range(0, len(c.voices)):
 		cur.execute('''insert into voice (number, score, range, name) values (?, ?, ?, ?)''', (i+1, scoreID, "NULL", c.voices[i].name))
@@ -109,7 +109,7 @@ for p in prints: #TODO - store only unique values for persons! Merge born/died!
 	cur.execute('''insert into edition (score, name, year) values (?, ?, ?)''', (str(scoreID), e.name, eYear))
 	cur.execute('SELECT last_insert_rowid()')
 	editionID = cur.fetchone()[0]
-	print("Edition " + str(editionID) + " is OK!")
+	#print("Edition " + str(editionID) + " is OK!")
 
 	for person in c.authors:
 		if (person.name == None or person.name == ""):
@@ -189,6 +189,6 @@ for p in prints: #TODO - store only unique values for persons! Merge born/died!
 	else:
 		partiture = 'N'
 	cur.execute('''insert into print (id, partiture, edition) values (?, ?, ?)''', (p.print_id, partiture, str(editionID)))
-	print("Print " + str(p.print_id) + " is OK!")
+	#print("Print " + str(p.print_id) + " is OK!")
 
 conn.commit()
