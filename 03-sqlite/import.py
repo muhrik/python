@@ -114,33 +114,74 @@ for p in prints: #TODO - store only unique values for persons! Merge born/died!
 	for person in c.authors:
 		if (person.name == None or person.name == ""):
 			continue
-		if (person.born == None):
-			pBorn = "NULL"
+
+		cur.execute('''select * from person where name = ?''', (str(person.name),))
+		personMatch = cur.fetchone()
+		if (personMatch == None or len(personMatch) == 0):
+			if (person.born == None):
+				pBorn = "NULL"
+			else:
+				pBorn = str(person.born)
+			if (person.died == None):
+				pDied = "NULL"
+			else:
+				pDied = str(person.died)
+			cur.execute('''insert into person (born, died, name) values (?, ?, ?)''', (pBorn, pDied, person.name))
+			cur.execute('SELECT last_insert_rowid()')
+			personID = cur.fetchone()[0]
 		else:
-			pBorn = str(person.born)
-		if (person.died == None):
-			pDied = "NULL"
-		else:
-			pDied = str(person.died)
-		cur.execute('''insert into person (born, died, name) values (?, ?, ?)''', (pBorn, pDied, person.name))
-		cur.execute('SELECT last_insert_rowid()')
-		personID = cur.fetchone()[0]
+			personID = personMatch[0]
+			born = personMatch[1]
+			died = personMatch[2]
+			name = personMatch[3]
+
+			if (person.born == None):
+				pBorn = born
+			else:
+				pBorn = person.born
+			if (person.died == None):
+				pDied = died
+			else:
+				pDied = person.died
+			
+			cur.execute('''update person set born = ?, died = ? where id = ?''', (pBorn, pDied, personID))
 		cur.execute('''insert into score_author (score, composer) values (?, ?)''', (scoreID, personID))
+			
 	
 	for person in e.authors:
 		if (person.name == None or person.name == ""):
 			continue
-		if (person.born == None):
-			pBorn = "NULL"
+
+		cur.execute('''select * from person where name = ?''', (str(person.name),))
+		personMatch = cur.fetchone()
+		if (personMatch == None or len(personMatch) == 0):
+			if (person.born == None):
+				pBorn = "NULL"
+			else:
+				pBorn = str(person.born)
+			if (person.died == None):
+				pDied = "NULL"
+			else:
+				pDied = str(person.died)
+			cur.execute('''insert into person (born, died, name) values (?, ?, ?)''', (pBorn, pDied, person.name))
+			cur.execute('SELECT last_insert_rowid()')
+			personID = cur.fetchone()[0]
 		else:
-			pBorn = str(person.born)
-		if (person.died == None):
-			pDied = "NULL"
-		else:
-			pDied = str(person.died)
-		cur.execute('''insert into person (born, died, name) values (?, ?, ?)''', (pBorn, pDied, person.name))
-		cur.execute('SELECT last_insert_rowid()')
-		personID = cur.fetchone()[0]
+			personID = personMatch[0]
+			born = personMatch[1]
+			died = personMatch[2]
+			name = personMatch[3]
+
+			if (person.born == None):
+				pBorn = born
+			else:
+				pBorn = person.born
+			if (person.died == None):
+				pDied = died
+			else:
+				pDied = person.died
+
+			cur.execute('''update person set born = ?, died = ? where id = ?''', (pBorn, pDied, personID))
 		cur.execute('''insert into edition_author (edition, editor) values (?, ?)''', (editionID, personID))
 
 	if (p.partiture == True):
