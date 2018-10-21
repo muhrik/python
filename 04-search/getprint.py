@@ -19,10 +19,12 @@ cur.execute('''select * from edition where id = ?''', (p[2],))
 e = cur.fetchone()
 if (e == None):
 	raise Exception("DB error while getting the edition!")
+	sys.exit()
 cur.execute('''select * from score where id = ?''', (e[1],))
 s = cur.fetchone()
 if (s == None):
 	raise Exception("DB error while getting the score!")
+	sys.exit()
 cur.execute('''select * from score_author where score = ?''', (s[0],))
 authors = cur.fetchall()
 
@@ -39,7 +41,7 @@ for i in range(0, len(authors)):
 
 	if (person == None):
 		raise Exception("DB error while getting the composer!")
-
+		sys.exit()
 	if (str(person[1]) == "NULL" and str(person[2]) == "NULL"):
 		print("\t{ \"name\": \"" + person[3] + "\"" + " }" + listEnder)
 	else:
