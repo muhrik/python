@@ -46,13 +46,13 @@ for i in range(0, len(people)):
 			sys.exit()
 		scoreName = score[1]
 		scoreGenre = score[2]
-		if (scoreGenre == ""):
+		if (scoreGenre == "" or scoreGenre == None):
 			scoreGenre = "NULL"
 		scoreKey = score[3]
-		if (scoreKey == ""):
+		if (scoreKey == "" or scoreKey == None):
 			scoreKey = "NULL"
 		scoreIncipit = score[4]
-		if (scoreIncipit == ""):
+		if (scoreIncipit == "" or scoreIncipit == None):
 			scoreIncipit = "NULL"
 		scoreYear = score[5]
 		cur.execute('''select * from edition where score = ?''', (scoreID,))
@@ -62,7 +62,7 @@ for i in range(0, len(people)):
 			sys.exit()
 		editionID = edition[0]
 		editionName = edition[2]
-		if (editionName == ""):
+		if (editionName == "" or editionName == None):
 			editionName = "NULL"
 		editionYear = edition[3]
 		cur.execute('''select * from print where edition = ?''', (editionID,))
@@ -137,7 +137,17 @@ for i in range(0, len(people)):
 			else:
 				listEnderk = ""
 			voice = voices[k]
-			print("         \"" + str(voice[1]) + "\": { \"name\": \"" + voice[4] + "\", \"range\": \"" + voice[3] + "\" }" + listEnderk)
+			voiceName = voice[4]
+			if (voiceName == "" or voiceName == None):
+				voiceName = "NULL"
+			else:
+				voiceName = "\"" + voiceName + "\""
+			voiceRange = voice[3]
+			if (voiceRange == "" or voiceRange == None or voiceRange == "NULL"):
+				voiceRange = "NULL"
+			else:
+				voiceRange = "\"" + voiceRange + "\""
+			print("         \"" + str(voice[1]) + "\": { \"name\": " + voiceName + ", \"range\": " + voiceRange + " }" + listEnderk)
 		print("     },")
 		print("     \"Partiture\": " + partiture + ",")
 		print("     \"Incipit\": " + scoreIncipit + " }" + listEnderj)
