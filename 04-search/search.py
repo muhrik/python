@@ -55,6 +55,8 @@ for i in range(0, len(people)):
 		if (scoreIncipit == "" or scoreIncipit == None):
 			scoreIncipit = "NULL"
 		scoreYear = score[5]
+		if (scoreYear == None):
+			scoreYear = "NULL"
 		cur.execute('''select * from edition where score = ?''', (scoreID,))
 		edition = cur.fetchone()
 		if (edition == None):
@@ -65,6 +67,8 @@ for i in range(0, len(people)):
 		if (editionName == "" or editionName == None):
 			editionName = "NULL"
 		editionYear = edition[3]
+		if (editionYear == None):
+			editionYear = "NULL"
 		cur.execute('''select * from print where edition = ?''', (editionID,))
 		prnt = cur.fetchone()
 		if (prnt == None):
@@ -108,7 +112,13 @@ for i in range(0, len(people)):
 			if (cmpser == None):
 				raise Exception("DB error while getting the composer!")
 				sys.exit()
-			print("       { " + "\"name\": \"" + cmpser[3] + "\", \"born\": " + str(cmpser[1]) + ", \"died\": " + str(cmpser[2]) + " }" + listEnderk)
+			composerBorn = str(cmpser[1])
+			if (composerBorn == None or composerBorn == ""):
+				composerBorn = "NULL"
+			composerDied = str(cmpser[2])
+			if (composerDied == None or composerDied == ""):
+				composerDied = "NULL"
+			print("       { " + "\"name\": \"" + cmpser[3] + "\", \"born\": " + composerBorn + ", \"died\": " + composerDied + " }" + listEnderk)
 		print("     ],")
 		print("     \"Title\": " + scoreName + ",")
 		print("     \"Genre\": " + scoreGenre + ",")
@@ -128,7 +138,13 @@ for i in range(0, len(people)):
 			if (cmpser == None):
 				raise Exception("DB error while getting the editor!")
 				sys.exit()
-			print("       { " + "\"name\": \"" + edtr[3] + "\", \"born\": " + str(edtr[1]) + ", \"died\": " + str(edtr[2]) + " }" + listEnderk)
+			composerBorn = str(edtr[1])
+			if (composerBorn == None or composerBorn == ""):
+				composerBorn = "NULL"
+			composerDied = str(edtr[2])
+			if (composerDied == None or composerDied == ""):
+				composerDied = "NULL"
+			print("       { " + "\"name\": \"" + edtr[3] + "\", \"born\": " + composerBorn + ", \"died\": " + composerDied + " }" + listEnderk)
 		print("     ],")
 		print("     \"Voices\": {")
 		for k in range(0, len(voices)):
