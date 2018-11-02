@@ -38,7 +38,7 @@ for line in file:
 				if (signList[0] == "-"):
 					coeff = -1
 		else:
-			coeff = int(numList[0])
+			coeff = int(numList[0].replace(" ", ""))
 		var = re.findall(varRE, coeffStr)[0]
 		if (varOrdering.get(var) == None):
 			varOrdering[var] = varIndex
