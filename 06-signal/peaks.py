@@ -10,34 +10,44 @@ if (len(sys.argv) == 1):
 	print("E.g. \"input.txt\"")
 	sys.exit()
 
-nums = []
-index = 0
-
 file = wave.open(sys.argv[1])
 numFrames = file.getnframes()
+numChannels = file.getnchannels()
+numSamples = numFrames * numChannels
 
-for i in range(1, numFrames):
-	string = file.readframes(1)
-	tuple = struct.unpack("<H", string)
+data = file.readframes(numFrames)
 
-	for num in tuple:
-		nums[index] = num
-		index = index + 1
+nums = struct.unpack("%ih" % numSamples, data)
+
+#for num in nums: #DEBUG
+#	print("Num " + str(num)) #DEBUG
 
 a = numpy.asarray(nums)
 output = numpy.fft.rfft(a)
 absOutput = numpy.absolute(output)
 
-absOutputAverage = numpy.average(absOutput)[0]
+absOutputAverage = numpy.average(absOutput)
 absOutputAverageTwenty = absOutputAverage * 20
 
-peaks = {}
+minPeak = -1
+maxPeak = -1
 for i in range(0, len(absOutput) - 1):
 	cn = absOutput[i]
+	#print("Iteration " + str(i) + ": " + str(cn)) #DEBUG
 	if (cn >= absOutputAverageTwenty):
-		peaks[i] = cn
+		if (minPeak == -1 and maxPeak == -1):
+			minPeak = cn
+			maxPeak = cn
+		if (minPeak > cn):
+			minPeak = cn
+		if (maxPeak < cn):
+			maxPeak = cn
 
-	
-
+if (minPeak == -1 and maxPeak == -1):
+	print("no peaks")
+else:
+	print("low = " + str(minPeak) + ", high = " + str(maxPeak))
+#print("AVG: " + str(absOutputAverage)) #DEBUG
+#print("AVG20: " + str(absOutputAverageTwenty)) #DEBUG
 
 
