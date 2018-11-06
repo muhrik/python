@@ -7,7 +7,7 @@ import struct
 
 if (len(sys.argv) == 1):
 	print("The first command line argument must be a .wav file, PCM, sample rate 8-48 kHz.")
-	print("E.g. \"input.txt\"")
+	print("E.g. \"sample.wav\"")
 	sys.exit()
 
 file = wave.open(sys.argv[1])
