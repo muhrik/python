@@ -91,6 +91,11 @@ aRank = numpy.linalg.linalg.matrix_rank(a) #Get original matrix rank
 aAugmented = numpy.column_stack((a,b))
 aAugmentedRank = numpy.linalg.matrix_rank(aAugmented) #Get augmented Matrix rank
 
+for aPyElem in aPy:
+	if (len(aPyElem) > numEquations):
+		print("No solution")
+		sys.exit()
+
 if (aAugmentedRank > aRank): #If the rank of the augmented matrix is greater than the rank of the original matrix, the system has no solution.
 	print("No solution")
 	sys.exit()	
