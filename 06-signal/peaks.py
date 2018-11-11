@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#author: Mario Uhrik 433501
 import sys
 import numpy
 import re
