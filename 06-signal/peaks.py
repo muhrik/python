@@ -23,7 +23,7 @@ nums = struct.unpack("%ih" % numSamples, data)
 minPeakIndex = -1
 maxPeakIndex = -1
 
-for windowIndex in range(0, len(nums) / (frameRate*numChannels) ):
+for windowIndex in range(0, int(len(nums) / (frameRate*numChannels)) ):
 	windowNumsIndexLeft = windowIndex * frameRate*numChannels
 	windowNumsIndexRight = windowNumsIndexLeft + frameRate*numChannels
 	windowNums = nums[windowNumsIndexLeft:windowNumsIndexRight]
