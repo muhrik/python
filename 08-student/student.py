@@ -6,6 +6,7 @@ import pandas as pd
 import json
 from scipy import stats
 import collections
+import datetime
 
 if (len(sys.argv) == 1):
 	print("The first command line argument must be a csv file with student data.")
@@ -52,5 +53,28 @@ npCumSumArray = np.cumsum(npArray)
 npTimeArray = np.asarray(list(range(0, len(npArray))), dtype=np.float64)
 slope = stats.linregress(npTimeArray, npCumSumArray).slope
 gainPerDay = slope / 7.0
-#TODO: expected number of days until 16 and 20 points. JSON output, use dumps just like in stat.py.
+if (slope == 0):
+	date16 = "inf"
+	date20 = "inf"
+else:
+	daysUntil16 = (16 - total) / gainPerDay
+	daysUntil20 = (20 - total) / gainPerDay
+	date16 = datetime.datetime.now() #Assumes the data is current
+	date20 = datetime.datetime.now() #Assumes the data is current
+	for i in range(0, int(daysUntil16) + 1): 
+	    date16 += datetime.timedelta(days=1)
+	for i in range(0, int(daysUntil20) + 1): 
+	    date20 += datetime.timedelta(days=1)
+	date16 = date16.date()
+	date20 = date20.date()
 
+outputMap = {}
+outputMap["mean"] = mean
+outputMap["median"] = median
+outputMap["total"] = total
+outputMap["passed"] = passed
+outputMap["regression slope"] = gainPerDay
+outputMap["date 16"] = str(date16)
+outputMap["date 20"] = str(date20)
+
+print(json.dumps(outputMap, sort_keys=True, indent=4, separators=(',', ': ')))
