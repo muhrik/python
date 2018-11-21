@@ -1,0 +1,66 @@
+review od 409776, *0.5, review od Bc. Oliver Velich mi velmi pomohla. Odhalila nejake dolezite chyby, poradila so stylom kodu a vysvetlila problematiku zadania 06
+
+1. stat.py
+if (len(sys.argv) == 1):
+	print("The first command line argument must be a text file for the script to read.")
+	print("E.g. scorelib.txt")
+	sys.exit()
+if (len(sys.argv) == 2):
+	print("The second command line argument must be either \'composer\' or \'century\'.")
+	print("No second command line argument has been received.")
+	sys.exit()
+Vypísané chyby nekorešpondujú s kontrolovaným stavom. Kontrolujeme počet argumentov ale vo výpise hovoríme o formáte vstupu. Zároveň pre použitie v rámci iného programu je vhodnejšie použiť Exception. Zo vstavaných je vhodná napr. ValueError.
+
+file = open(sys.argv[1], 'r')
+file nie je nikde uzavretý, je vhodné použitie with blok.
+
+(m == None), (m != None)
+pri porovnávaní s None je vždy odporúčané použiť "m is None" resp. "m is not None" a môžeme vynechať zátvorky
+
+if (composerCountDict.get(v2) == None):
+	composerCountDict[v2] = 1
+composerCountDict[v2] = composerCountDict[v2] + 1
+Tento kus kódu vloží v2 prvýkrát s hodnotou 2.
+
+century = re.search("[1][0-9][t][h]", m.group(1)), range(16,21)
+nepripúšťa vstup 21st, v dátach sa ale neobjavuje, tak to nie je veľká chyba. Pri výstupe to ale problém je, minimálne print 246 obsahuje skladbu napísanú v 21. storočí.
+
+Pre sotoročia prechádzame slovník rokov znova celý pre každé skúmané storočie. Vhodnejšie by bolo prejsť slovník iba raz a pre každý záznam určiť správne storočie.
+Nie je ošetrený prázdny composer. Vhodné vyriešiť už pri parsovaní a do composerDict takú hodnotu vôbec nevkladať.
+Intuitívnejšie mapovanie by bolo 1 print na 1 slovník.
+pokiaľ v for nepoužívame premennú, cez ktorú cyklíme, je možné jej priradiť alias _, napr. for _ in range(3)
+
+5. eqn.py
+
+Riešenie neplatných vstupov podobne ako v 1.
+file neuzatvorený podobne ako v 1.
+porovnávanie s None podobne ako v 1.
+
+for aPyElem in aPy:
+	if (len(aPyElem) > numEquations):
+		print("No solution")
+		sys.exit()
+táto kontrola sa mi zdá zvláštna, každý aPyElem predsa bude mať rovankú dĺžku, tak sa vytvárali. Počet premenných vieme predsa získať napr. z varOrdering. Zo zadania "Rovnic bude nejvýše tolik, kolik je proměnných." Naopak pokiaľ je počet premenných väčší ako počet rovníc, nemusí to znamenať žiadne riešenie, len vyššiu dimenziu riešenia.
+výpis premenných v riešení nie je zoradený alfabeticky.
+Inak vytvorenie matíc je urobené správne.
+
+6. peaks.py
+Prvých 21 riadkov je v poriadku. Správne určíš počet kanálov (mono vs. stereo), počet framov (časových okamihov, kedy sa zaznamenala amplitúda zvuku) aj konečný počet samplov (vlastne samotných dát). Byte dáta správne prevedieš do tuple intov (cez struct.unpack()). V tomto bode je ale nutné dáta si rozdeliť do okien. Okná nám slúžia na to, aby sme neanalyzovali celú skladbu ako celok, ale vždy len jeho časť. Pokiaľ si dĺžku okna nastavíme na 1 sekundu, získame tým ľahko interpretovateľný výsledok FFT: index vráteného poľa predstavuje jednotlivé frekvencie s presnosťou na 1 Hz a hodnota na danom indexe mieru zastúpenia danej frekvencie (viac informácií sa môžeš dozvedieť z diskusie). V tomto bode je takisto nutné premýšľať nad rozdielom stereo vs. mono. Pre súbor z poskytovne Stereo_1000_80.wav začína tuple "nums" nasledovne: (0, 0, 4663, 374, 9231, 748, 13611, 1122, 17715, 1496, 21457, 1870, 24763, 2244, ...), keďže vieme, že ľavý kanál má frekvenciu 1000 Hz a pravý kanál 80 Hz, z dát je vidieť, že vždy nepárne (liché) číslo predstavuje pravý kanál a párne (sudé) predstavuje ľavý kanál (indexujeme od 0 takže nultý prvok tuple je vlastne sudý).
+Časť "a = numpy.asarray(nums)" je teda nutné upraviť tak, aby sme z "nums" brali vždy iba počet samplov zodpovedajúci danému oknu. Na to potrebujeme poznať vzorkovaciu frekvenciu (getframerate()). Počet vzoriek pre jedno okno bude framerate * nchannels. Zo zadania musíme hodnoty pre stereo priemerovať, takže to musíme tiež zakomponovať.
+Peak je potom frekvencia, ktorej amplitúdaje >= 20*average. Ten je napočítaný správne, pokojne by sa však niektoré funkcie mohli štandardne reťaziť (20 * np.average(np.absolute(np.fft.rfft(data))) Je vhodné nájsť si nejakú pohodlnú rovnováhu medzi počtom riadkov a dĺžkou jednoho riadku tak, aby to bolo čo najčitateľnejšie. Keďže je ale peak frekvencia, hľadáme také indexy v poli, ktorých amplitúdy niečo spĺňajú (odporúčam pozrieť si np.argwhere(), tá nahradí celý trochu nepodarený for z riadku 35).
+Pre úplnosť, táto formulácia:
+for i in range(0, len(absOutput) - 1):
+	cn = absOutput[i]
+má v Pythone elegantný ekvivalent:
+for cn in absOutput[:-1]:
+	...
+V tomto prípade ani nerozumiem vynechaniu posledného prvku. 
+Nasledujúce if podmienky by si asi zaslúžili použitie elif/else (porozmýšľať nad tým, či to náhodou nie sú disjunktné prípady)
+
+odporúčania:
+- numpy sa štandardne importuje ako np (import numpy as np), je to iba menná konvencia ale každý to tak očakáva
+- odstrániť nepoužitý import (re)
+- keď pracuješ so súbormi, je good practice uzatvárať ich do with, takto sa postará o korektné zatvorenie súboru:
+with open(file) as f:
+	a = f.read()
+print(a)
