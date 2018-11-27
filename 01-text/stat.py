@@ -109,13 +109,14 @@ if (sys.argv[2] == "composer"):
 		for k2, v2 in v.items():
 			if (composerCountDict.get(v2) == None):
 				composerCountDict[v2] = 1
-			composerCountDict[v2] = composerCountDict[v2] + 1
+			else:
+				composerCountDict[v2] = composerCountDict[v2] + 1
 	for k, v in composerCountDict.items():
 		print(k + ": " + str(v))
 
 if (sys.argv[2] == "century"):
 	centCountDict = {}
-	for cntr in range(16,21):
+	for cntr in range(16,22):
 		centCountDict[cntr] = 0;
 		minYear = (cntr - 1) * 100
 		maxYear = (cntr) * 100
@@ -127,4 +128,7 @@ if (sys.argv[2] == "century"):
 				if (year == cntr):
 					centCountDict[cntr] = centCountDict[cntr] + 1
 	for k, v in centCountDict.items():
-		print(str(k) + "th century: " + str(v))
+		if (k <= 20):
+			print(str(k) + "th century: " + str(v))
+		if (k == 21):
+			print(str(k) + "st century: " + str(v))
