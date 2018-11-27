@@ -109,7 +109,8 @@ solution = numpy.linalg.solve(a, b)
 #print(str(solution))
 
 printStr = "Solution: "
-for var, varIndex in varOrdering.items():
+for var in sorted(varOrdering):
+	varIndex = varOrdering[var]
 	printStr = printStr + var + "=" + str(solution[varIndex]) + " "
 
 print(printStr)
